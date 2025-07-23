@@ -427,194 +427,157 @@ code: {
         ];
 
         // Application state
-        let currentTheme = 'light';
-        let filteredVideos = [...videosData];
-        let currentFilter = 'All';
+let currentTheme = 'light';
+let filteredVideos = [...videosData];
 
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeTheme();
-            generateFilterTabs();
-            renderVideos();
-            setupEventListeners();
-            setupSearch();
-        });
+document.addEventListener('DOMContentLoaded', function () {
+    initializeTheme();
+    renderVideos();
+    setupEventListeners();
+    setupSearch();
+});
 
-        // Theme management
-        function initializeTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            currentTheme = savedTheme;
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            updateThemeToggle();
-            updatePrismTheme();
-        }
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    currentTheme = savedTheme;
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    updateThemeToggle();
+    updatePrismTheme();
+}
 
-        function toggleTheme() {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            localStorage.setItem('theme', currentTheme);
-            updateThemeToggle();
-            updatePrismTheme();
-        }
+function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    localStorage.setItem('theme', currentTheme);
+    updateThemeToggle();
+    updatePrismTheme();
+}
 
-        function updateThemeToggle() {
-            const themeIcon = document.getElementById('themeIcon');
-            const themeText = document.getElementById('themeText');
-            
-            if (currentTheme === 'dark') {
-                themeIcon.textContent = '☀️';
-                themeText.textContent = 'Light Mode';
-            } else {
-                themeIcon.textContent = '🌙';
-                themeText.textContent = 'Dark Mode';
-            }
-        }
+function updateThemeToggle() {
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+    themeText.textContent = currentTheme === 'dark' ? 'Light Mode' : 'Dark Mode';
+}
 
-        function updatePrismTheme() {
-            const darkTheme = document.getElementById('prism-dark-theme');
-            darkTheme.disabled = currentTheme === 'light';
-        }
+function updatePrismTheme() {
+    document.getElementById('prism-dark-theme').disabled = currentTheme === 'light';
+}
 
-        // Filter management
-        function generateFilterTabs() {
-            // Remove filter tabs entirely
-            const filterTabs = document.getElementById('filterTabs');
-            filterTabs.innerHTML = '';
-        }
+function setupSearch() {
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', debounce(handleSearch, 300));
+}
 
-        function filterVideos(topic) {
-            currentFilter = topic;
-            
-            // Update active filter button
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent === topic) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            // Apply filter
-            applyFilters();
-        }
+function handleSearch() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    filteredVideos = videosData.filter(video =>
+        video.title.toLowerCase().includes(searchTerm)
+    );
+    renderVideos();
+}
 
-        // Search functionality
-        function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', debounce(handleSearch, 300));
-        }
+function renderVideos() {
+    const videosGrid = document.getElementById('videosGrid');
+    const noResults = document.getElementById('noResults');
 
-        function handleSearch() {
-            applyFilters();
-        }
+    if (filteredVideos.length === 0) {
+        videosGrid.innerHTML = '';
+        noResults.style.display = 'block';
+        return;
+    }
 
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            filteredVideos = videosData.filter(video => {
-                const matchesSearch = !searchTerm || 
-                    video.title.toLowerCase().includes(searchTerm);
-                
-                return matchesSearch;
-            });
-            
-            renderVideos();
-        }
+    noResults.style.display = 'none';
+    videosGrid.innerHTML = filteredVideos.map(video => createVideoCard(video)).join('');
+    setTimeout(() => Prism.highlightAll(), 100);
+}
 
-        // Video rendering
-        function renderVideos() {
-            const videosGrid = document.getElementById('videosGrid');
-            const noResults = document.getElementById('noResults');
-            
-            if (filteredVideos.length === 0) {
-                videosGrid.innerHTML = '';
-                noResults.style.display = 'block';
-                return;
-            }
-            
-            noResults.style.display = 'none';
-            videosGrid.innerHTML = filteredVideos.map(video => createVideoCard(video)).join('');
-            
-            // Initialize syntax highlighting for new content
-            setTimeout(() => {
-                Prism.highlightAll();
-            }, 100);
-        }
-
-        function createVideoCard(video) {
-            return `
-                <div class="video-card">
-                    <div class="video-header">
-                        <h2 class="video-title">${video.title}</h2>
-                    </div>
-                    <div class="video-content">
-                        <div class="video-wrapper">
-                            <iframe 
-                                src="https://www.youtube.com/embed/${video.youtubeId}"
-                                title="${video.title}"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen>
-                            </iframe>
-                        </div>
-                        <div class="code-section">
-                            <div class="code-header">
-                                <h3 class="code-title">📝 Code Example</h3>
-                                <button class="copy-btn" onclick="copyCode('${video.id}')">
-                                    <span>📋</span>
-                                    <span class="copy-text">Copy Code</span>
-                                </button>
-                            </div>
-                            <pre class="code-block"><code class="language-${video.code.language}" id="code-${video.id}">${escapeHtml(video.code.content)}</code></pre>
-                        </div>
-                    </div>
+function createVideoCard(video) {
+    return `
+        <div class="video-card">
+            <div class="video-header">
+                <h2 class="video-title">${video.title}</h2>
+            </div>
+            <div class="video-content">
+                <div class="video-wrapper">
+                    <iframe 
+                        src="https://www.youtube.com/embed/${video.youtubeId}"
+                        title="${video.title}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
                 </div>
-            `;
-        }
+                ${generateCodeSections(video.code, video.id)}
+            </div>
+        </div>
+    `;
+}
 
-        // Utility functions
-        function copyCode(videoId) {
-            const video = videosData.find(v => v.id === videoId);
-            const copyBtn = event.target.closest('.copy-btn');
-            const copyText = copyBtn.querySelector('.copy-text');
-            
-            navigator.clipboard.writeText(video.code.content).then(() => {
-                copyBtn.classList.add('copied');
-                copyText.textContent = 'Copied!';
-                
-                setTimeout(() => {
-                    copyBtn.classList.remove('copied');
-                    copyText.textContent = 'Copy Code';
-                }, 2000);
-            });
-        }
+function generateCodeSections(codeArray, videoId) {
+    if (!Array.isArray(codeArray)) {
+        codeArray = [{
+            filename: "main.py",
+            language: codeArray.language || "python",
+            content: codeArray.content || ""
+        }];
+    }
 
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, m => map[m]);
-        }
+    return codeArray.map((file, index) => `
+        <div class="code-section">
+            <div class="code-header">
+                <h3 class="code-title">📄 ${file.filename}</h3>
+                <button class="copy-btn" onclick="copyCode('${videoId}', ${index})">
+                    <span>📋</span>
+                    <span class="copy-text">Copy Code</span>
+                </button>
+            </div>
+            <pre class="code-block"><code class="language-${file.language}" id="code-${videoId}-${index}">${escapeHtml(file.content)}</code></pre>
+        </div>
+    `).join('');
+}
 
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
+function copyCode(videoId, index) {
+    const video = videosData.find(v => v.id === videoId);
+    const codeArray = Array.isArray(video.code) ? video.code : [video.code];
+    const content = codeArray[index].content;
 
-        // Event listeners
-        function setupEventListeners() {
-            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-        }
+    const copyBtn = event.target.closest('.copy-btn');
+    const copyText = copyBtn.querySelector('.copy-text');
+
+    navigator.clipboard.writeText(content).then(() => {
+        copyBtn.classList.add('copied');
+        copyText.textContent = 'Copied!';
+        setTimeout(() => {
+            copyBtn.classList.remove('copied');
+            copyText.textContent = 'Copy Code';
+        }, 2000);
+    });
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+function setupEventListeners() {
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+}
+
     </script>
 </body>
 </html>
