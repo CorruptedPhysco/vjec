@@ -360,6 +360,18 @@
     <script>
         // Sample data - replace this with your actual data
         const videosData = [
+
+            {
+    id: "16",
+title: "16|Functions |Algorithmic Thinking with Python |UCEST 105|Programming in Python",
+topic: "Python",
+youtubeId: "-x1hdQI_43w",
+code: {
+    language: "python",
+    content: `def message():\n    print("Vimal Jyothi")\n\ndef message_one(name):\n    print("Engineering " + name)\n\ndef product(num1, num2):\n    return num1 * num2\n\ndef sum_fixed():\n    return 5 + 8\n\ndef square(number):\n    return number * number\n\nmessage()\nmessage_one("College")\nmessage_one("Institution")\nprint("Product of 4 and 6:", product(4, 6))\nprint("Fixed sum:", sum_fixed())\nprint("Square of 5:", square(5))\nprint("Square of 10:", square(10))`
+}
+},
+            
           {
     id: "17",
     title: "17|Recursion |Algorithmic Thinking with Python |UCEST 105|Programming in Python",
@@ -381,16 +393,7 @@ print(recursion(5))
 print(recursion(10))
 `
     }},
-    {
-    id: "16",
-title: "16|Functions |Algorithmic Thinking with Python |UCEST 105|Programming in Python",
-topic: "Python",
-youtubeId: "-x1hdQI_43w",
-code: {
-    language: "python",
-    content: `def message():\n    print("Vimal Jyothi")\n\ndef message_one(name):\n    print("Engineering " + name)\n\ndef product(num1, num2):\n    return num1 * num2\n\ndef sum_fixed():\n    return 5 + 8\n\ndef square(number):\n    return number * number\n\nmessage()\nmessage_one("College")\nmessage_one("Institution")\nprint("Product of 4 and 6:", product(4, 6))\nprint("Fixed sum:", sum_fixed())\nprint("Square of 5:", square(5))\nprint("Square of 10:", square(10))`
-}
-},{ id: "18",
+    { id: "18",
 title: "18|Lambda functions|Algorithmic Thinking with Python|UCEST 105|Programming in Python",
 topic: "Python",
 youtubeId: "APwr4oAFLmQ",
@@ -478,6 +481,42 @@ code: {
     "filename": "main.py",
     "language": "python",
     "content": "print(\"Hello\\tMy Name\\tis\\tMohan\")\nprint(\"Hello My Name is\\nMohan\")\nprint(\"Hello \" * 3)\nprint(\"Hello\\t\" * 3)\nprint(\"Hello\\n\" * 3)\nprint(\"Hello \\\"Mohan\\\"\")\nprint(\"Hello \\'Mohan\\'\")\nprint(\"Hello\\\\Mohan\")"
+  }
+},
+
+            {
+  "id": "26",
+  "title": "26| Calculator  |Algorithmic Thinking with Python |UCEST 105|Programming in Python| CST 362|Python",
+  "topic": "Python",
+  "youtubeId": "AIIuEuJUaYc",
+  "code": {
+    "filename": "main.py",
+    "language": "python",
+    "content": "num1 = int(input(\"Your first number: \"))\nnum2 = int(input(\"Your second number: \"))\n\nprint(\"1. Addition\")\nprint(\"2. Subtraction\")\nprint(\"3. Multiplication\")\nprint(\"4. Division\")\n\ncheck = int(input(\"Enter your selection: \"))\n\nif check == 1:\n    result = num1 + num2\n    print(\"Sum =\", result)\nelif check == 2:\n    result = num1 - num2\n    print(\"Sum =\", result)\nelif check == 3:\n    result = num1 * num2\n    print(\"Product =\", result)\nelif check == 4:\n    if num2 == 0:\n        print(\"Division by zero is not possible\")\n    else:\n        result = num1 / num2\n        print(\"Division =\", result)\nelse:\n    print(\"You entered the wrong value\")"
+  }
+},
+
+            {
+  "id": "27",
+  "title": "27|Multiple of a number| Algorithmic Thinking with P|UCEST 105|Programming in Python| CST 362|Python",
+  "topic": "Python",
+  "youtubeId": "7-3ZieXyIDA",
+  "code": {
+    "filename": "main.py",
+    "language": "python",
+    "content": "n = int(input(\"Enter a number: \"))\ni = 1\n\nwhile i <= n:\n    print(i * 5)\n    i += 1"
+  }
+},
+
+            {
+  "id": "28",
+  "title": "28|Factorial of No |Algorithmic Thinking with Python|UCEST 105|Programming in Python| CST 362|Python",
+  "topic": "Python",
+  "youtubeId": "vUGUYD73pp8",
+  "code": {
+    "filename": "main.py",
+    "language": "python",
+    "content": "n = int(input(\"Enter a number: \"))\nfact = 1\n\nwhile n > 0:\n    fact = fact * n\n    n = n - 1\n\nprint(\"Factorial =\", fact)\n\ndef factorial_recursive(x):\n    if x == 0 or x == 1:\n        return 1\n    else:\n        return x * factorial_recursive(x - 1)\n\nnum = int(input(\"Enter a number for recursive factorial: \"))\nprint(\"Factorial =\", factorial_recursive(num))"
   }
 },
 
